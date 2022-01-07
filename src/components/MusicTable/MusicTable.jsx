@@ -1,10 +1,13 @@
 import React from "react";
 import "./MusicTable.css";
 import EditSong from "../EditSong";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from 'axios'
 
 const MusicTable = (props) => {
   const [show, setShow] = useState(false);
+  const [songs, setSongs] = useState([]);
+  const [toggle, setToggle] = useState()
 
   const showModal = () => {
     setShow(true);
@@ -14,8 +17,23 @@ const MusicTable = (props) => {
     setShow(false);
   };
 
+  useEffect(()=>{
+    getSongs()
+  },[toggle, props.toggle])
+
+  const getSongs = async() =>{
+    let response = await axios.get('http://127.0.0.1:8000/music/')
+    setSongs(response.data)
+    props.getSongs(response.data)
+  } 
+
+  const deleteSong = async(key) =>{
+    await axios.delete(`http://127.0.0.1:8000/music/${key}/`)
+    setToggle(!toggle)
+  }
+
   console.log(props);
-  if (props.songs !== [])
+  if (songs !== [])
     return (
       <div>
         <table className="center">
@@ -34,7 +52,7 @@ const MusicTable = (props) => {
                 <td>{song.album}</td>
                 <td>{song.genre}</td>
                 <td>{song.release_date}</td>
-                <td><button onClick={() => props.deleteSong(song.id)} type="submit">
+                <td><button onClick={() => deleteSong(song.id)} type="submit">
                   Delete Song
                 </button></td>
                 <EditSong show={show} handleClose={hideModal} props={song}>

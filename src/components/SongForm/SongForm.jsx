@@ -1,50 +1,45 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import './SongForm.css'
-import EditSong from '../EditSong';
+import axios from "axios";
 
-class SongForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            title: '',
-            artist: '',
-            album: '',
-            genre: '',
-            release_date: ''
-        }
+const SongForm = (props) => {
+    const [title,setTitle] = useState('')
+    const [artist,setArtist] = useState('')
+    const [album,setAlbum] = useState('')
+    const [genre,setGenre] = useState('')
+    const [release_date,setReleaseDate] = useState('')
+
+const handleSubmit = async(e) =>{
+    e.preventDefault()
+    let newSong = {
+        title:title,
+        artist:artist,
+        album:album,
+        genre: genre,
+        release_date:release_date
     }
+    await axios.post('http://127.0.0.1:8000/music/', newSong)
+    props.newSong()
+}
 
-    handleChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    }
-
-    handleSubmit = (event) => {
-        event.preventDefault()
-        this.props.addNewSong(this.state)
-    }
-
-    render() { 
         return ( 
             <div className="formDiv">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <h1>Add a Song</h1>
                 <label>Title</label>
-                <input name="title" onChange={this.handleChange} value={this.state.title}/>
+                <input name="title" onChange={(e)=>setTitle(e.target.value)} />
                 <label>Artist</label>
-                <input name="artist" onChange={this.handleChange} value={this.state.artist}/>
+                <input name="artist" onChange={(e)=>setArtist(e.target.value)} />
                 <label>Album</label>
-                <input name="album" onChange={this.handleChange} value={this.state.album}/>
+                <input name="album" onChange={(e)=>setAlbum(e.target.value)} />
                 <label>Genre</label>
-                <input name="genre" onChange={this.handleChange} value={this.state.genre}/>
+                <input name="genre" onChange={(e)=>setGenre(e.target.value)} />
                 <label>Release Date</label>
-                <input type="date" name="release_date" onChange={this.handleChange} value={this.state.release_date}/>
+                <input type="date" name="release_date" onChange={(e)=>setReleaseDate(e.target.value)} />
                 <button type="submit">Add Song</button>
             </form>
             </div>
          );
-    }
 }
  
 export default SongForm;
