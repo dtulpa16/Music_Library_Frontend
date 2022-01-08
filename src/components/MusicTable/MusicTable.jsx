@@ -55,7 +55,7 @@ const MusicTable = (props) => {
                 <td><button onClick={() => deleteSong(song.id)} type="submit">
                   Delete Song
                 </button></td>
-                <EditSong show={show} handleClose={hideModal} props={song}>
+                <EditSong show={show} handleClose={hideModal} props={song} toggle={toggle} setToggle={setToggle}>
                   <p>Edit Song</p>
                 </EditSong>
                 <td><button type="button" onClick={showModal}>

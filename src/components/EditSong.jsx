@@ -4,7 +4,7 @@ import bootstrap from "bootstrap";
 import './EditSong.css'
 import axios from "axios";
 
-const EditSong = ({ handleClose, show, props }) => {
+const EditSong = ({ handleClose, show, props, toggle, setToggle }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
     const [state, setState] = useState({ title: props.title, artist: props.artist, album:props.album, genre:props.genre, release_date:props.release_date});
     
@@ -21,7 +21,7 @@ const EditSong = ({ handleClose, show, props }) => {
         event.preventDefault()
         await axios.put(`http://127.0.0.1:8000/music/${props.id}/`, state).then(alert('Song updated!'))
         handleClose()
-        window.location.reload();
+        setToggle(!toggle)
     }
 
   return (
