@@ -6,29 +6,20 @@ import axios from "axios";
 
 const EditSong = ({ handleClose, show, props }) => {
     const showHideClassName = show ? "modal display-block" : "modal display-none";
-    const [title,setTitle]=useState(props.title)
-    const [artist,setArtist]=useState(props.artist)
-    const [album,setAlbum]=useState(props.album)
-    const [genre,setGenre]=useState(props.genre)
-    const [release,setRelease]=useState(props.release_date)
-
-
-    const handleChange = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    }
+    const [state, setState] = useState({ title: props.title, artist: props.artist, album:props.album, genre:props.genre, release_date:props.release_date});
+    
+        const handleChange = e => {
+            const { name, value } = e.target;
+            setState(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        };
 
     const handleSubmit = async(event) => {
+      console.log('state', state)
         event.preventDefault()
-        let updatedSong = {
-            title: title,
-            artist: artist,
-            album:album,
-            genre:genre,
-            release_date:release
-        }
-        await axios.put(`http://127.0.0.1:8000/music/${props.id}/`, updatedSong).then(alert('Song updated!'))
+        await axios.put(`http://127.0.0.1:8000/music/${props.id}/`, state).then(alert('Song updated!'))
         handleClose()
         window.location.reload();
     }
@@ -40,15 +31,15 @@ const EditSong = ({ handleClose, show, props }) => {
       <form onSubmit={handleSubmit}>
                 <h1>Edit Song</h1>
                 <label>Title</label>
-                <input name="title" onChange={(e)=>setTitle(e.target.value)} defaultValue={title}/>
+                <input name="title" onChange={handleChange} defaultValue={props.title}/>
                 <label>Artist</label>
-                <input name="artist" onChange={(e)=>setArtist(e.target.value)} defaultValue={props.artist}/>
+                <input name="artist" onChange={handleChange} defaultValue={props.artist}/>
                 <label>Album</label>
-                <input name="album" onChange={(e)=>setAlbum(e.target.value)} defaultValue={props.album}/>
+                <input name="album" onChange={handleChange} defaultValue={props.album}/>
                 <label>Genre</label>
-                <input name="genre" onChange={(e)=>setGenre(e.target.value)} defaultValue={props.genre}/>
+                <input name="genre" onChange={handleChange} defaultValue={props.genre}/>
                 <label>Release Date</label>
-                <input type="date" name="release_date" onChange={(e)=>setRelease(e.target.value)} defaultValue={props.release_date}/>
+                <input type="date" name="release_date" onChange={handleChange} defaultValue={props.release_date}/>
                 <button type="submit">Update Song</button>
             </form>
         <button type="button" onClick={handleClose}>
